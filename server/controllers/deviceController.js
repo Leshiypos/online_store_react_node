@@ -7,6 +7,12 @@ class DeviceController {
   async create(req, res, next) {
     try {
       const { name, price, brandId, typeId, info } = req.body;
+      const potencialName = Device.findOne({ where: { name } });
+      if (potencialName) {
+        return next(
+          ApiError.badRequest("Устройство с таким имененем уже существет")
+        );
+      }
       const { img } = req.files;
       let fileName = uuid.v4() + ".jpg";
       img.mv(path.resolve(__dirname, "..", "static", fileName));
